@@ -8,8 +8,8 @@ import (
 
 	"github.com/BoucherR/aba_server/config"
 
-	"ggithub.com/BoucherR/aba_server/errors"
 	"github.com/BoucherR/aba_server/db"
+	"github.com/BoucherR/aba_server/errors"
 	"github.com/BoucherR/aba_server/utils"
 
 	"github.com/dgrijalva/jwt-go"

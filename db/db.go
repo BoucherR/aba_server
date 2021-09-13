@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/go-postgres-jwt-react-starter/server/config"
+	"github.com/BoucherR/aba_server/config"
 )
 
 //DB instance
