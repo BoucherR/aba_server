@@ -3,7 +3,7 @@ package utils
 import (
 	"regexp"
 
-	"github.com/go-postgres-jwt-react-starter/server/db"
+	"github.com/BoucherR/aba_server/db"
 )
 
 const (
@@ -26,12 +26,12 @@ func ValidateUser(user db.Register, err []string) []string {
 	return err
 }
 
-func ValidatePasswordReset(resetPassword db.ResetPassword)(bool,string){
-	if len(resetPassword.Password) < 4{
-		return false,"Invalid password, password should be more than 4 characters"
+func ValidatePasswordReset(resetPassword db.ResetPassword) (bool, string) {
+	if len(resetPassword.Password) < 4 {
+		return false, "Invalid password, password should be more than 4 characters"
 	}
-	if resetPassword.Password != resetPassword.ConfirmPassword{
-		return false,"Password reset failed, passwords must match"
+	if resetPassword.Password != resetPassword.ConfirmPassword {
+		return false, "Password reset failed, passwords must match"
 	}
-	return true,""
+	return true, ""
 }

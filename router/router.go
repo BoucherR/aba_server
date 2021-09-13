@@ -1,8 +1,8 @@
 package router
 
 import (
-	"github.com/go-postgres-jwt-react-starter/server/controller"
-	"github.com/go-postgres-jwt-react-starter/server/middlewares"
+	"github.com/BoucherR/aba_server/controller"
+	"github.com/BoucherR/aba_server/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,6 +21,6 @@ func SetupRouter() *gin.Engine {
 	router.POST("/login", controller.Login)
 	router.GET("/session", controller.Session)
 	router.POST("/createReset", controller.InitiatePasswordReset)
-	router.POST("/resetPassword",controller.ResetPassword)
+	router.POST("/resetPassword", controller.ResetPassword)
 	return router
 }

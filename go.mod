@@ -1,4 +1,4 @@
-module github.com/go-postgres-jwt-react-starter/server
+module github.com/BoucherR/aba_server
 
 go 1.13
 

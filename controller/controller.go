@@ -3,13 +3,14 @@ package controller
 import (
 	"database/sql"
 	"fmt"
-	"github.com/go-postgres-jwt-react-starter/server/config"
 	"net/http"
 	"time"
 
-	"github.com/go-postgres-jwt-react-starter/server/db"
-	"github.com/go-postgres-jwt-react-starter/server/errors"
-	"github.com/go-postgres-jwt-react-starter/server/utils"
+	"github.com/BoucherR/aba_server/config"
+
+	"ggithub.com/BoucherR/aba_server/errors"
+	"github.com/BoucherR/aba_server/db"
+	"github.com/BoucherR/aba_server/utils"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -28,34 +29,32 @@ func Pong(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"ping": "pong"})
 }
 
-
 //Initiate Password reset email with reset url
-func InitiatePasswordReset(c *gin.Context){
+func InitiatePasswordReset(c *gin.Context) {
 	var createReset db.CreateReset
 	c.Bind(&createReset)
-	if id,ok := checkAndRetrieveUserIDViaEmail(createReset); ok{
-		link := fmt.Sprintf("%s/reset/%d",config.CLIENT_URL,id)
+	if id, ok := checkAndRetrieveUserIDViaEmail(createReset); ok {
+		link := fmt.Sprintf("%s/reset/%d", config.CLIENT_URL, id)
 		//Reset link is returned in json response for testing purposes since no email service is integrated
-		c.JSON(http.StatusOK, gin.H{"success": true, "msg": "Successfully sent reset mail to " + createReset.Email, "link":link})
-	} else{
-		c.JSON(http.StatusNotFound,gin.H{"success": false, "errors":"No user found for email: " + createReset.Email})
+		c.JSON(http.StatusOK, gin.H{"success": true, "msg": "Successfully sent reset mail to " + createReset.Email, "link": link})
+	} else {
+		c.JSON(http.StatusNotFound, gin.H{"success": false, "errors": "No user found for email: " + createReset.Email})
 	}
 }
 
-func ResetPassword(c *gin.Context){
+func ResetPassword(c *gin.Context) {
 	var resetPassword db.ResetPassword
 	c.Bind(&resetPassword)
-	if ok,errStr := utils.ValidatePasswordReset(resetPassword); ok{
+	if ok, errStr := utils.ValidatePasswordReset(resetPassword); ok {
 		password := db.CreateHashedPassword(resetPassword.Password)
-		_,err := db.DB.Query(db.UpdateUserPasswordQuery,resetPassword.ID,password)
+		_, err := db.DB.Query(db.UpdateUserPasswordQuery, resetPassword.ID, password)
 		errors.HandleErr(c, err)
-		c.JSON(http.StatusOK,gin.H{"success":true, "msg": "User password reset successfully"})
-	} else{
-		c.JSON(http.StatusOK, gin.H{"success":false,"errors":errStr})
+		c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User password reset successfully"})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"success": false, "errors": errStr})
 	}
 
 }
-
 
 //Create new user
 func Create(c *gin.Context) {
@@ -155,18 +154,18 @@ func checkUserExists(user db.Register) bool {
 }
 
 //Returns -1 as ID if the user doesnt exist in the table
-func checkAndRetrieveUserIDViaEmail(createReset db.CreateReset) (int,bool){
-	rows, err := db.DB.Query(db.CheckUserExists,createReset.Email)
-	if err != nil{
-		return -1,false
+func checkAndRetrieveUserIDViaEmail(createReset db.CreateReset) (int, bool) {
+	rows, err := db.DB.Query(db.CheckUserExists, createReset.Email)
+	if err != nil {
+		return -1, false
 	}
-	if !rows.Next(){
-		return -1,false
+	if !rows.Next() {
+		return -1, false
 	}
 	var id int
 	err = rows.Scan(&id)
-	if err != nil{
-		return -1,false
+	if err != nil {
+		return -1, false
 	}
-	return id,true
+	return id, true
 }
