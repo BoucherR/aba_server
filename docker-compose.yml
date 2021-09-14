@@ -1,0 +1,28 @@
+version: '1'
+services:
+
+  aba-server-postgres:
+    image: "postgres:9.6-alpine"
+    container_name: aba-server-postgres
+    volumes:
+      - aba-server-data:/var/lib/postgresql/data
+    ports:
+      - 3000:3000
+    environment:
+      - POSTGRES_DB:goauth
+      - POSTGRES_USER:ryanboucher
+      - POSTGRES_PASSWORD:greyCup12
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  aba-server-app:
+    build: ./
+    container_name: aba-server-app
+    environment:
+      - CLIENT_URL=http://aba-server-postgres:3000
+    ports:
+      - 8081:8081
+    links:
+      - aba-server-postgres
+
+volumes:
+  aba-server-data:
