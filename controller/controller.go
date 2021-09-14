@@ -141,7 +141,7 @@ func Login(c *gin.Context) {
 	})
 
 	fmt.Println(tokenString)
-	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "logged in succesfully", "user": claims.User, "token": tokenString})
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "logged in successfully", "user": claims.User, "token": tokenString})
 }
 
 func checkUserExists(user db.Register) bool {
