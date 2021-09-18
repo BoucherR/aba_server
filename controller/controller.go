@@ -4,9 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
-
-	"github.com/BoucherR/aba_server/config"
 
 	"github.com/BoucherR/aba_server/db"
 	"github.com/BoucherR/aba_server/errors"
@@ -26,7 +25,10 @@ type Claims struct {
 
 // Pong tests that api is working
 func Pong(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"ping": "pong"})
+	name := os.Getenv("DB_USER")
+	fmt.Printf("NAME: %v", name)
+
+	c.JSON(http.StatusOK, gin.H{"ping": name})
 }
 
 //Initiate Password reset email with reset url
@@ -34,7 +36,7 @@ func InitiatePasswordReset(c *gin.Context) {
 	var createReset db.CreateReset
 	c.Bind(&createReset)
 	if id, ok := checkAndRetrieveUserIDViaEmail(createReset); ok {
-		link := fmt.Sprintf("%s/reset/%d", config.CLIENT_URL, id)
+		link := fmt.Sprintf("%s/reset/%d", os.Getenv("CLIENT_URL"), id)
 		//Reset link is returned in json response for testing purposes since no email service is integrated
 		c.JSON(http.StatusOK, gin.H{"success": true, "msg": "Successfully sent reset mail to " + createReset.Email, "link": link})
 	} else {
@@ -74,7 +76,7 @@ func Create(c *gin.Context) {
 	db.HashPassword(&user)
 	_, err := db.DB.Query(db.CreateUserQuery, user.Name, user.Password, user.Email)
 	errors.HandleErr(c, err)
-	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created succesfully"})
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created successfully"})
 }
 
 // Session returns JSON of user info
@@ -139,7 +141,7 @@ func Login(c *gin.Context) {
 	})
 
 	fmt.Println(tokenString)
-	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "logged in succesfully", "user": claims.User, "token": tokenString})
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "logged in successfully", "user": claims.User, "token": tokenString})
 }
 
 func checkUserExists(user db.Register) bool {
